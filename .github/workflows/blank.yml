@@ -25,9 +25,9 @@ jobs:
           set -euo pipefail
           asset="canton-devkit_${DEVKIT_VERSION}_linux_amd64.tar.gz"
           base="https://github.com/bitdynamics-ab/canton-devkit/releases/download/${DEVKIT_VERSION}"
+          expected_sha256="3bdb17ec18ed3115329072261bf431409fa7f0b19f46e6919a47a547ce5ef012"
           curl -fsSL -o "${asset}" "${base}/${asset}"
-          curl -fsSL -o SHA256SUMS "${base}/SHA256SUMS"
-          grep " ${asset}\\$" SHA256SUMS | sha256sum -c -
+          echo "${expected_sha256}  ${asset}" | sha256sum -c -
           tar -xzf "${asset}"
           chmod +x canton-devkit
           sudo install -m 0755 canton-devkit /usr/local/bin/canton-devkit
@@ -75,4 +75,7 @@ jobs:
 
       - name: Remove LocalNet resources
         if: always()
-        run: canton-devkit localnet remove --name "${INSTANCE}" --force || true
+        run: |
+          if command -v canton-devkit >/dev/null 2>&1; then
+            canton-devkit localnet remove --name "${INSTANCE}" --force || true
+          fi
