@@ -1,4 +1,3 @@
-# Canton-DevKit-CCTools-Campaign
 your-repository/
 │
 └── .github/
